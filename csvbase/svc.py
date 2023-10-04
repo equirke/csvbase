@@ -339,7 +339,7 @@ def create_user(
         registered=registered,
     )
 
-    if email is not None:
+    if email:
         user.email_obj = models.UserEmail(email_address=email)
     user.api_key = models.APIKey(api_key=secrets.token_bytes(16))
 
