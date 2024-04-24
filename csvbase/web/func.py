@@ -164,6 +164,7 @@ def register_and_sign_in_new_user(sesh: Session) -> User:
         form["password"],
         form.get("email"),
     )
+    sesh.commit()
     sign_in_user(new_user)
     flash("Account registered")
     return new_user
