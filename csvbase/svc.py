@@ -476,9 +476,9 @@ def tables_for_user(
         .join(models.User)
         .outerjoin(models.GithubUpstream)
         .filter(models.Table.user_uuid == user_uuid)
-        .filter(models.GithubUpstream.table_uuid == models.Table.table_uuid)
         .order_by(models.Table.created.desc())
     )
+    print(str(rp))
     if not include_private:
         rp = rp.filter(models.Table.public)
     backend = PGUserdataAdapter(sesh)
