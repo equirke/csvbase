@@ -13,3 +13,5 @@ sqlalchemy-stubs==0.4
 types-bleach==5.0.2
 types-setuptools==65.1.0
 types-toml==0.10.8.5
+beautifulsoup4==4.12.3
+types-beautifulsoup4==4.12.0

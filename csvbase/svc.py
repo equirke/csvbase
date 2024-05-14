@@ -478,7 +478,6 @@ def tables_for_user(
         .filter(models.Table.user_uuid == user_uuid)
         .order_by(models.Table.created.desc())
     )
-    print(str(rp))
     if not include_private:
         rp = rp.filter(models.Table.public)
     backend = PGUserdataAdapter(sesh)
