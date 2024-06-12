@@ -453,7 +453,7 @@ def test_read__x_accel_redirect(client, ten_rows, test_user, content_type, sesh)
     with patch.object(get_config(), "x_accel_redirect", True):
         resp = get_table(client, test_user.username, ten_rows.table_name, content_type)
     assert resp.status_code == 200
-    assert resp.headers.get("X-Accel-Redirect").startswith("/repcache/")
+    assert resp.headers.get("X-Accel-Redirect", "").startswith("/repcache/")
 
 
 def test_read__metadata_headers(client, ten_rows, test_user, content_type, sesh):
