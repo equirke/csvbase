@@ -257,7 +257,7 @@ def create_table_metadata(
     including assigning the table uuid.
 
     """
-    check_table_name_is_allowed(table_name)
+    check_table_name_is_allowed(sesh, table_name, user_uuid)
     table_uuid = uuid4()
     table_obj = models.Table(
         table_uuid=table_uuid,
@@ -436,12 +436,14 @@ def create_user(
     )
 
 
-def check_table_name_is_allowed(table_name: str) -> None:
+def check_table_name_is_allowed(sesh: Session, table_name: str, user_uuid: UUID) -> None:
     too_long = len(table_name) >= 200
     invalid = not ID_REGEX.match(table_name)
     if any([too_long, invalid]):
         logger.warning("table name prohibited: %s", table_name)
         raise exc.InvalidTableNameException()
+    if sesh.query(exists().where(models.Table.table_name == table_name and models.Table.user_uuid == user_uuid)).scalar():
+        raise exc.TableNameAlreadyExists()
     # FIXME: it would probably be good to prohibit some table names
     # is_prohibited: bool = sesh.query(
     #     exists().where(models.ProhibitedUsername.username == username.lower())

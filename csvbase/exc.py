@@ -149,3 +149,6 @@ class MissingTempFile(CSVBaseException):
 
 class ReadOnlyException(CSVBaseException):
     pass
+
+class TableNameAlreadyExists(CSVBaseException):
+    pass

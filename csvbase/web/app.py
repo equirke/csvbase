@@ -87,6 +87,7 @@ EXCEPTION_MESSAGE_CODE_MAP = {
     ),
     exc.ReadOnlyException: ("that table is read-only", 400),
     exc.FAQEntryDoesNotExistException: ("that FAQ entry does not exist", 404),
+    exc.TableNameAlreadyExists: ("you already have a table with that name", 400)
 }
 
 
