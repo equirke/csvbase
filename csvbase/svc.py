@@ -436,13 +436,20 @@ def create_user(
     )
 
 
-def check_table_name_is_allowed(sesh: Session, table_name: str, user_uuid: UUID) -> None:
+def check_table_name_is_allowed(
+    sesh: Session, table_name: str, user_uuid: UUID
+) -> None:
     too_long = len(table_name) >= 200
     invalid = not ID_REGEX.match(table_name)
     if any([too_long, invalid]):
         logger.warning("table name prohibited: %s", table_name)
         raise exc.InvalidTableNameException()
-    if sesh.query(exists().where(models.Table.table_name == table_name and models.Table.user_uuid == user_uuid)).scalar():
+    if sesh.query(
+        exists().where(
+            models.Table.table_name == table_name
+            and models.Table.user_uuid == user_uuid
+        )
+    ).scalar():
         raise exc.TableNameAlreadyExists()
     # FIXME: it would probably be good to prohibit some table names
     # is_prohibited: bool = sesh.query(

@@ -117,10 +117,11 @@ def test_uploading_a_table__not_logged_in__username_that_differs_only_by_case(
 
 def test_uploading_a_table__over_quota(client, test_user):
     with current_user(test_user):
+        private_table_name = f"private-table-1-{random_string()}"
         resp1 = client.post(
             "/new-table",
             data={
-                "table-name": "private-table-1",
+                "table-name": private_table_name,
                 "private": "on",
                 "data-licence": "1",
                 "csv-file": (FileStorage(BytesIO(b"a,b,c\n1,2,3"), "test.csv")),
@@ -128,7 +129,9 @@ def test_uploading_a_table__over_quota(client, test_user):
             content_type="multipart/form-data",
         )
         assert resp1.status_code == 302
-        assert resp1.headers["Location"] == f"/{test_user.username}/private-table-1"
+        assert (
+            resp1.headers["Location"] == f"/{test_user.username}/{private_table_name}"
+        )
 
         resp2 = client.post(
             "/new-table",
@@ -400,3 +403,17 @@ def test_copy__post_private(client, test_user, ten_rows):
 
         get_resp = client.get(new_url, headers={"Accept": "application/json"})
     assert not get_resp.json["is_public"]
+
+
+def test_uploading_a_table__duplicate_table_name(client, test_user, ten_rows):
+    with current_user(test_user):
+        resp = client.post(
+            "/new-table",
+            data={
+                "table-name": ten_rows.table_name,
+                "data-licence": "1",
+                "csv-file": (FileStorage(BytesIO(b"a,b,c\n1,2,3"), "test.csv")),
+            },
+            content_type="multipart/form-data",
+        )
+        assert resp.status_code == 400
